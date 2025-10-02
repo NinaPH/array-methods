@@ -16,7 +16,7 @@ fetch("https://fakestoreapi.com/products")
   .then((result) => result.json())
   .then((data) => {
     products = data;
-    maxPriceEl.max = Math.max(...data.map((p) => p.price));
+    maxPriceEl.max = Math.ceil(Math.max(...data.map((p) => p.price)));
     renderProducts(products);
   });
 
