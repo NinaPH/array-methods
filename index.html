@@ -4,10 +4,22 @@
     <link rel="stylesheet" href="style.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Array Methods and Form Validation</title>
+    <title>Webshop</title>
   </head>
   <body>
-    <h1>Array Methods and Form Validation</h1>
+    <h1>Webshop</h1>
+    <div class="cart"><button class="cart-btn"></button></div>
+    <div class="filter-container">
+      <input
+        type="text"
+        name="search"
+        id="search"
+        placeholder="Search for products..."
+      />
+      <label for="max-price">Max price:</label>
+      <input type="number" name="max-price" id="max-price" min="1" />
+    </div>
+    <div class="product-list"></div>
     <script src="script.js"></script>
   </body>
 </html>
