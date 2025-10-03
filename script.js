@@ -1,27 +1,51 @@
 let productList = document.querySelector(".product-list");
-let cart = [];
 let cartDiv = document.querySelector(".cart");
 let cartBtn = document.querySelector(".cart-btn");
-
 let filterContainer = document.querySelector(".filter-container");
 let maxPriceEl = document.getElementById("max-price");
+let searchInputEl = document.getElementById("search");
+let categoriesEl = document.getElementById("categories");
+let cartTotalEl = document.querySelector(".cart-total");
 
+let totalPrice = 0;
+let cart = [];
 let products = [];
+let categories = ["all"];
+let selectedCategory = "all";
 
 //mangler funktionalitet: filter ud fra søgeord + min pris
 
-updateCartBtn();
+function applyFilters() {
+  const searchInput = searchInputEl.value.toLowerCase();
+  const maxPrice = Number(maxPriceEl.value);
+
+  const filteredProducts = products.filter((p) => {
+    const matchesPrice = p.price <= maxPrice;
+    const matchesSearch = p.title.toLowerCase().includes(searchInput);
+    const matchesCategory =
+      selectedCategory == "all" || p.category == selectedCategory;
+    return matchesPrice && matchesSearch && matchesCategory;
+  });
+
+  renderProducts(filteredProducts);
+}
 
 fetch("https://fakestoreapi.com/products")
   .then((result) => result.json())
   .then((data) => {
     products = data;
     maxPriceEl.max = Math.ceil(Math.max(...data.map((p) => p.price)));
-    renderProducts(products);
+    maxPriceEl.value = maxPriceEl.max;
+    applyFilters();
   });
 
-function updateCartBtn() {
+function updateCart(item) {
+  cart = [...cart, item];
   cartBtn.textContent = `Cart (${cart.length})`;
+
+  totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+  cartTotalEl.textContent = `Total price: $${totalPrice.toFixed(2)}`;
+  console.log(cart);
 }
 
 function renderProducts(data) {
@@ -57,17 +81,31 @@ function renderProducts(data) {
     descriptionEl.textContent = description;
     productContainer.appendChild(descriptionEl);
 
+    if (!categories.includes(category)) {
+      categories.push(category);
+    }
+
     addToCartBtn.addEventListener("click", () => {
-      cart.push(item);
-      console.log(cart);
-      updateCartBtn();
+      updateCart(item);
     });
   });
+
+  const currentSelection = categoriesEl.value;
+
+  categories.sort();
+  categoriesEl.innerHTML = "";
+  categories.forEach((category) => {
+    categoriesEl.add(new Option(category, category));
+  });
+
+  categoriesEl.value = currentSelection;
 }
 
-maxPriceEl.addEventListener("input", () => {
-  const filteredProducts = products.filter(
-    (product) => product.price <= maxPriceEl.value
-  );
-  renderProducts(filteredProducts);
+maxPriceEl.addEventListener("input", applyFilters);
+
+searchInputEl.addEventListener("input", applyFilters);
+
+categoriesEl.addEventListener("change", (e) => {
+  selectedCategory = e.target.value;
+  applyFilters();
 });

@@ -8,7 +8,10 @@
   </head>
   <body>
     <h1>Webshop</h1>
-    <div class="cart"><button class="cart-btn"></button></div>
+    <div class="cart">
+      <button class="cart-btn">Cart (0)</button>
+      <div class="cart-total">Total price: $0</div>
+    </div>
     <div class="filter-container">
       <input
         type="text"
@@ -17,7 +20,9 @@
         placeholder="Search for products..."
       />
       <label for="max-price">Max price:</label>
-      <input type="number" name="max-price" id="max-price" min="1" />
+      <input type="number" name="max-price" id="max-price" min="1" value="1" />
+      <label for="categories">Categories</label>
+      <select name="categories" id="categories"></select>
     </div>
     <div class="product-list"></div>
     <script src="script.js"></script>
